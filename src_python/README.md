@@ -24,7 +24,7 @@
 
 - create an API token after logging in at https://pypi.org/ (it's a long string starting with `pypi-`)
 - `pip install --upgrade twine`
-- `cd happyserial`
+- `cd src_python`
 - `twine upload dist/*`
     - username: `__token__`
     - password: the entire token above, including the `pypi-` prefix
