@@ -1,0 +1,3 @@
+
+class HappySerial(object):
+    pass
