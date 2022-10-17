@@ -2,3 +2,4 @@ __pycache__
 /src_python/src/happyserial.egg-info
 /src_python/dist
 *.emSession
+Output/
