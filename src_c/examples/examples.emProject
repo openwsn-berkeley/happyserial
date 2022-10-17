@@ -1,5 +1,5 @@
 <!DOCTYPE CrossStudio_Project_File>
-<solution Name="happyserial_test" target="8" version="2">
+<solution Name="examples" target="8" version="2">
   <project Name="happyserial_test">
     <configuration
       LIBRARY_IO_TYPE="RTT"
@@ -50,7 +50,7 @@
     </folder>
     <folder Name="Source Files">
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
-      <file file_name="happyserial_test/main.c" />
+      <file file_name="happyserial_test/happyserial_test.c" />
     </folder>
     <folder Name="System Files">
       <file file_name="common/SEGGER_THUMB_Startup.s" />
