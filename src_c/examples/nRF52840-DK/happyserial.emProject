@@ -21,22 +21,22 @@
       arm_target_device_name="nRF52840_xxAA"
       arm_target_interface_type="SWD"
       c_preprocessor_definitions="ARM_MATH_CM4;NRF52840_XXAA;__NRF_FAMILY"
-      c_user_include_directories="$(ProjectDir)/../../nRF52840-DK/common/CMSIS_5/CMSIS/Core/Include;$(ProjectDir)/../../nRF52840-DK/common/nRF/Device/Include"
-      debug_register_definition_file="$(ProjectDir)/common/nrf52840_Registers.xml"
+      c_user_include_directories="$(ProjectDir)/../../nRF52840-DK/system/CMSIS_5/CMSIS/Core/Include;$(ProjectDir)/../../nRF52840-DK/system/nRF/Device/Include"
+      debug_register_definition_file="$(ProjectDir)/system/nrf52840_Registers.xml"
       debug_stack_pointer_start="__stack_end__"
       debug_start_from_entry_point_symbol="No"
       debug_target_connection="J-Link"
       gcc_entry_point="Reset_Handler"
-      link_linker_script_file="$(ProjectDir)/../../nRF52840-DK/common/nRF_Flash_Variant4.icf"
-      linker_memory_map_file="$(ProjectDir)/../../nRF52840-DK/common/nRF52840_xxAA_MemoryMap.xml"
-      macros="DeviceHeaderFile=$(PackagesDir)/../../nRF52840-DK/common/nRF/Device/Include/nrf.h;DeviceSystemFile=$(PackagesDir)/common/nRF/Device/Source/system_nrf52.c;DeviceVectorsFile=$(PackagesDir)/common/nRF/Source/nrf52840_Vectors.s;DeviceFamily=nRF;Target=nRF52840_xxAA"
+      link_linker_script_file="$(ProjectDir)/../../nRF52840-DK/system/nRF_Flash_Variant4.icf"
+      linker_memory_map_file="$(ProjectDir)/../../nRF52840-DK/system/nRF52840_xxAA_MemoryMap.xml"
+      macros="DeviceHeaderFile=$(PackagesDir)/../../nRF52840-DK/system/nRF/Device/Include/nrf.h;DeviceSystemFile=$(PackagesDir)/system/nRF/Device/Source/system_nrf52.c;DeviceVectorsFile=$(PackagesDir)/system/nRF/Source/nrf52840_Vectors.s;DeviceFamily=nRF;Target=nRF52840_xxAA"
       project_directory="../common/echo"
       project_type="Executable"
       target_reset_script="Reset();"
       target_trace_initialize_script="EnableTrace(&quot;$(TraceInterfaceType)&quot;)" />
     <folder Name="CMSIS Files">
-      <file file_name="../../nRF52840-DK/common/nRF/Device/Include/nrf.h" />
-      <file file_name="../../nRF52840-DK/common/nRF/Device/Source/system_nrf52.c">
+      <file file_name="../../nRF52840-DK/system/nRF/Device/Include/nrf.h" />
+      <file file_name="../../nRF52840-DK/system/nRF/Device/Source/system_nrf52.c">
         <configuration
           Name="Common"
           default_code_section=".init"
@@ -44,7 +44,7 @@
       </file>
     </folder>
     <folder Name="Script Files">
-      <file file_name="../../nRF52840-DK/common/nRF/Scripts/nRF_Target.js">
+      <file file_name="../../nRF52840-DK/system/nRF/Scripts/nRF_Target.js">
         <configuration Name="Common" file_type="Reset Script" />
       </file>
     </folder>
@@ -53,9 +53,9 @@
       <file file_name="echo.c" />
     </folder>
     <folder Name="System Files">
-      <file file_name="../../nRF52840-DK/common/SEGGER_THUMB_Startup.s" />
-      <file file_name="../../nRF52840-DK/common/nRF/Source/nRF_Startup.s" />
-      <file file_name="../../nRF52840-DK/common/nRF/Source/nrf52840_Vectors.s">
+      <file file_name="../../nRF52840-DK/system/SEGGER_THUMB_Startup.s" />
+      <file file_name="../../nRF52840-DK/system/nRF/Source/nRF_Startup.s" />
+      <file file_name="../../nRF52840-DK/system/nRF/Source/nrf52840_Vectors.s">
         <configuration Name="Common" file_type="Assembly" />
       </file>
     </folder>
