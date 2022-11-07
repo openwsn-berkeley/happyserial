@@ -51,6 +51,18 @@
     <folder Name="Source Files">
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
       <file file_name="echo.c" />
+      <folder Name="happyserial">
+        <file file_name="../../../happyserial/happyserial.c" />
+        <file file_name="../../../happyserial/happyserial.h" />
+        <file file_name="../../../happyserial/hdlc.c" />
+        <file file_name="../../../happyserial/hdlc.h" />
+      </folder>
+      <folder Name="ports">
+        <folder Name="nRF52840">
+          <file file_name="../../../ports/nRF52840/uart.c" />
+        </folder>
+        <file file_name="../../../ports/uart.h" />
+      </folder>
     </folder>
     <folder Name="System Files">
       <file file_name="../../nRF52840-DK/system/SEGGER_THUMB_Startup.s" />
