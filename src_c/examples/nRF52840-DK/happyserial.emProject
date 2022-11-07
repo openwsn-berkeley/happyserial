@@ -21,7 +21,7 @@
       arm_target_device_name="nRF52840_xxAA"
       arm_target_interface_type="SWD"
       c_preprocessor_definitions="ARM_MATH_CM4;NRF52840_XXAA;__NRF_FAMILY"
-      c_user_include_directories="$(ProjectDir)/../../nRF52840-DK/system/CMSIS_5/CMSIS/Core/Include;$(ProjectDir)/../../nRF52840-DK/system/nRF/Device/Include"
+      c_user_include_directories="$(ProjectDir)/../../nRF52840-DK/system/CMSIS_5/CMSIS/Core/Include;$(ProjectDir)/../../nRF52840-DK/system/nRF/Device/Include;$(ProjectDir)/../../../happyserial;$(ProjectDir)/../../../ports/;"
       debug_register_definition_file="$(ProjectDir)/system/nrf52840_Registers.xml"
       debug_stack_pointer_start="__stack_end__"
       debug_start_from_entry_point_symbol="No"

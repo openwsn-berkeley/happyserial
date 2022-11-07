@@ -1,34 +1,36 @@
-/*********************************************************************
-*                    SEGGER Microcontroller GmbH                     *
-*                        The Embedded Experts                        *
-**********************************************************************
+#include "nrf52840.h"
+#include "happyserial.h"
 
--------------------------- END-OF-HEADER -----------------------------
+//=========================== defines =========================================
 
-File    : main.c
-Purpose : Generic application start
+//=========================== prototypes ======================================
 
-*/
+//=========================== variables =======================================
 
-#include <stdio.h>
-#include <stdlib.h>
+typedef struct {
+    uint32_t       dummy;
+} app_vars_t;
 
-/*********************************************************************
-*
-*       main()
-*
-*  Function description
-*   Application entry point.
-*/
+app_vars_t app_vars;
+
+typedef struct {
+    uint32_t       dummy;
+} app_dbg_t;
+
+app_dbg_t app_dbg;
+
+//=========================== main ============================================
+
 int main(void) {
-  int i;
+    
+    // main loop
+    while(1) {
 
-  for (i = 0; i < 100; i++) {
-    printf("Hello World %d!\n", i);
-  }
-  do {
-    i++;
-  } while (1);
+        // wait for event
+        __SEV(); // set event
+        __WFE(); // wait for event
+        __WFE(); // wait for event
+    }
 }
 
-/*************************** End of file ****************************/
+//=========================== interrupt handlers ==============================
