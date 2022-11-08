@@ -94,7 +94,13 @@ void uart_init(uart_txByteDone_cbt uart_txByteDone_cb, uart_rxByte_cbt uart_rxBy
 }
 
 void uart_txByte(uint8_t b) {
-    // TODO
+    
+    // prepare
+    uart_vars.txBuf[0] = b;
+    
+    // start sending
+    NRF_UARTE0->TASKS_STARTTX    = 0x00000001;
+    // note: don't wait, interrupt-driven
 }
 
 //=========================== private =========================================
