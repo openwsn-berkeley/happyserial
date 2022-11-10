@@ -6,7 +6,7 @@ import serial
 
 class BreakfastSerial(threading.Thread):
     
-    def __init__(self,serialport,rx_cb)
+    def __init__(self,serialport,rx_cb):
         
         # store params
         self.serialport = serialport

@@ -1,4 +1,4 @@
-import BreakfastSerial
+from happyserial import BreakfastSerial
 
 class HdlcException(Exception):
     pass
@@ -54,12 +54,15 @@ class Hdlc(object):
         self.rx_cb      = rx_cb
         
         # open serial port
-        self.serial     = BreakfastSerial(self.serialport,self._serial_rx_cb)
+        self.serial     = BreakfastSerial.BreakfastSerial(self.serialport,self._serial_rx_cb)
     
     #============================ public ======================================
     
     def tx(self,buf):
-        hdlcbuf = self._hdlcify(buf)
+        chrbuf  = ''.join([chr(b) for b in buf])
+        hdlcbuf = self._hdlcify(chrbuf)
+        for b in hdlcbuf:
+            self.serial.tx(str(b).encode())
     
     #============================ private =====================================
     
