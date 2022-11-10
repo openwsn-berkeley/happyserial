@@ -9,7 +9,7 @@ def _happyserial_rx_cb(buf):
     print('rx: {}'.format(buf))
 
 happy = HappySerial.HappySerial(
-    serialport = 'COM41',
+    serialport = 'COM41', # first port of the two that appear when plugging in the nRF52840-DK
     rx_cb      = _happyserial_rx_cb,
 )
 

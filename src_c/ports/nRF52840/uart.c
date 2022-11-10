@@ -64,7 +64,7 @@ void uart_init(uart_txByteDone_cbt uart_txByteDone_cb, uart_rxByte_cbt uart_rxBy
     NRF_UARTE0->PSEL.TXD               = 0x00000006; // 0x00000006==P0.6
     NRF_UARTE0->PSEL.RXD               = 0x00000008; // 0x00000008==P0.8
     NRF_UARTE0->CONFIG                 = 0x00000000; // 0x00000000==no flow control, no parity bits, 1 stop bit
-    NRF_UARTE0->BAUDRATE               = 0x00275000; // 0x00275000==Baud9600 baud
+    NRF_UARTE0->BAUDRATE               = 0x004EA000; // 0x004EA000==Baud19200
     //  3           2            1           0
     // 1098 7654 3210 9876 5432 1098 7654 3210
     // .... .... .... .... .... .... ..C. .... C: ENDRX_STARTRX

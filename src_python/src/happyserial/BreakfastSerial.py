@@ -29,6 +29,6 @@ class BreakfastSerial(threading.Thread):
     #======================== public ==========================================
 
     def tx(self,b):
-        self.serial.write(b)
+        self.serial.write(bytes([b]))
 
     #======================== private =========================================
