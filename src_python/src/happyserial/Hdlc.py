@@ -1,3 +1,5 @@
+import BreakfastSerial
+
 class HdlcException(Exception):
     pass
 
@@ -45,9 +47,26 @@ class Hdlc(object):
         0x7bc7, 0x6a4e, 0x58d5, 0x495c, 0x3de3, 0x2c6a, 0x1ef1, 0x0f78,
     )
     
+    def __init__(self,serialport,rx_cb):
+        
+        # store params
+        self.serialport = serialport
+        self.rx_cb      = rx_cb
+        
+        # open serial port
+        self.serial     = BreakfastSerial(self.serialport,self._serial_rx_cb)
+    
     #============================ public ======================================
     
-    def hdlcify(self,inBuf):
+    def tx(self,buf):
+        hdlcbuf = self._hdlcify(buf)
+    
+    #============================ private =====================================
+    
+    def _serial_rx_cb(buf):
+        raise NotImplementedError()
+    
+    def _hdlcify(self,inBuf):
         
         # make copy of input
         outBuf     = inBuf[:]
@@ -70,7 +89,7 @@ class Hdlc(object):
         
         return outBuf
 
-    def dehdlcify(self,inBuf):
+    def _dehdlcify(self,inBuf):
         assert inBuf[ 0]==self.HDLC_FLAG
         assert inBuf[-1]==self.HDLC_FLAG
         
@@ -99,7 +118,5 @@ class Hdlc(object):
         
         return outBuf
 
-    #============================ private =====================================
-    
     def _crcIteration(self,crc,b):
         return (crc>>8)^self.FCS16TAB[((crc^(ord(b))) & 0xff)]
