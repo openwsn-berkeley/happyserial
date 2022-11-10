@@ -13,6 +13,13 @@
 #define HDLC_TXBUF_LEN       256 // leave at 256 to allow for wrap-around
 #define HDLC_RXBUF_LEN       256
 
+// worst case length: every byte is escaped
+// assuming txBuf is empty and can only hold HDLC_TXBUF_LEN bytes:
+// 2 bytes for the flags
+// 2 bytes for the CRC
+// if HDLC_TXBUF_LEN==256, HDLC_MSG_MAXLEN==124
+#define HDLC_MSG_MAXLEN      ((HDLC_TXBUF_LEN/2)-2-2)
+
 //=========================== variables =======================================
 
 typedef struct {
