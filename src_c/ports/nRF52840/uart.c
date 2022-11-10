@@ -41,9 +41,6 @@ void uart_init(uart_txByteDone_cbt uart_txByteDone_cb, uart_rxByte_cbt uart_rxBy
     memset(&uart_vars, 0x00, sizeof(uart_vars_t));
     memset(&uart_dbg,  0x00, sizeof(uart_dbg_t));
 
-    // debug
-    uart_dbg.init = true;
-
     // store params
     uart_vars.uart_txByteDone_cb       = uart_txByteDone_cb;
     uart_vars.uart_rxByte_cb           = uart_rxByte_cb;
@@ -67,8 +64,14 @@ void uart_init(uart_txByteDone_cbt uart_txByteDone_cb, uart_rxByte_cbt uart_rxBy
     NRF_UARTE0->PSEL.TXD               = 0x00000006; // 0x00000006==P0.6
     NRF_UARTE0->PSEL.RXD               = 0x00000008; // 0x00000008==P0.8
     NRF_UARTE0->CONFIG                 = 0x00000000; // 0x00000000==no flow control, no parity bits, 1 stop bit
-    NRF_UARTE0->BAUDRATE               = 0x004EA000; // 0x004EA000==19200 baud (actual rate: 19208)
-    NRF_UARTE0->TASKS_STARTRX          = 0x00000001; // 0x00000001==start RX state machine; read received byte from RXD register
+    NRF_UARTE0->BAUDRATE               = 0x004EA000; // 0x004EA000==Baud19200
+    //  3           2            1           0
+    // 1098 7654 3210 9876 5432 1098 7654 3210
+    // .... .... .... .... .... .... ..C. .... C: ENDRX_STARTRX
+    // .... .... .... .... .... .... .D.. .... D: ENDRX_STOPRX
+    // xxxx xxxx xxxx xxxx xxxx xxxx xx1x xxxx 
+    //    0    0    0    0    0    0    2    0 0x00000020
+    NRF_UARTE0->SHORTS                 = 0x00000020;
     //  3           2            1           0
     // 1098 7654 3210 9876 5432 1098 7654 3210
     // .... .... .... .... .... .... .... ...A A: CTS
@@ -82,15 +85,23 @@ void uart_init(uart_txByteDone_cbt uart_txByteDone_cb, uart_rxByte_cbt uart_rxBy
     // .... .... .... I... .... .... .... .... I: RXSTARTED
     // .... .... ...J .... .... .... .... .... J: TXSTARTED
     // .... .... .L.. .... .... .... .... .... L: TXSTOPPED
-    // xxxx xxxx x0x0 0x0x xxxx xx00 0xx1 x000 
-    //    0    0    0    0    0    0    1    0 0x00000010
-    NRF_UARTE0->INTENSET               = 0x00000010;
+    // xxxx xxxx x0x0 0x0x xxxx xx01 0xx1 x000 
+    //    0    0    0    0    0    1    1    0 0x00000110
+    NRF_UARTE0->INTENSET               = 0x00000110;
     NRF_UARTE0->ENABLE                 = 0x00000008; // 0x00000008==enable
     
     // enable interrupts
     NVIC_SetPriority(UARTE0_UART0_IRQn, 1);
     NVIC_ClearPendingIRQ(UARTE0_UART0_IRQn);
     NVIC_EnableIRQ(UARTE0_UART0_IRQn);
+
+    // start receiving
+    NRF_UARTE0->EVENTS_RXSTARTED       = 0;
+    NRF_UARTE0->TASKS_STARTRX          = 0x00000001; // 0x00000001==start RX state machine; read received byte from RXD register
+    while (NRF_UARTE0->EVENTS_RXSTARTED == 0);
+
+    // debug
+    uart_dbg.init = true;
 }
 
 void uart_txByte(uint8_t b) {
@@ -107,7 +118,7 @@ void uart_txByte(uint8_t b) {
 
 //=========================== interrupt handlers ==============================
 
-  void UARTE0_UART0_IRQHandler(void) {
+void UARTE0_UART0_IRQHandler(void) {
 
     // debug
     uart_dbg.num_ISR_UARTE0_UART0_IRQHandler++;
