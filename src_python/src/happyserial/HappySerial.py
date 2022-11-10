@@ -2,6 +2,8 @@ from happyserial import Hdlc
 
 class HappySerial(object):
     
+    MSG_MAXLEN          = 124 # due to limited buffer size on embedded side
+    
     def __init__(self,serialport,rx_cb):
         
         # store params
@@ -17,6 +19,7 @@ class HappySerial(object):
     #======================== public ==========================================
     
     def tx(self,buf):
+        
         self.hdlc.tx(buf)
     
     #======================== private =========================================
