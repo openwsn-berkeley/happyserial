@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define HAPPYVERSION {1,0,0}
+#define HAPPYVERSION {1,1,0}
 
 //=========================== define ==========================================
 
