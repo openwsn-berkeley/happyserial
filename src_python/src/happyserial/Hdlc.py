@@ -7,9 +7,8 @@ class HdlcException(Exception):
 class Hdlc(object):
     
     HDLC_FLAG           = 0x7e
-    HDLC_FLAG_ESCAPED   = 0x5e
     HDLC_ESCAPE         = 0x7d
-    HDLC_ESCAPE_ESCAPED = 0x5d
+    HDLC_ESCAPE_MASK    = 0x20
     
     def __init__(self,serialport,rx_cb):
         
@@ -18,71 +17,134 @@ class Hdlc(object):
         self.rx_cb      = rx_cb
         
         # local variables
-        self.crc        = Crc.Crc()
-        self.serial     = BreakfastSerial.BreakfastSerial(self.serialport,self._serial_rx_cb)
+        self.crc             = Crc.Crc()
+        self.serial          = BreakfastSerial.BreakfastSerial(
+            self.serialport,
+            self._serial_rx_cb,
+        )
+        self.rxBusyReceiving = False
+        self.rxEscaping      = False
+        self.rxLastByte      = None
     
     #============================ public ======================================
     
     def tx(self,buf):
-        hdlcbuf = self._hdlcify(buf)
-        for b in hdlcbuf:
+    
+        # HDLC'ify
+        self._hdlc_tx_open()
+        for b in buf:
+            self._hdlc_tx_write(b)
+        self._hdlc_tx_close()
+        
+        # send
+        for b in self.txBuf:
             self.serial.tx(b)
     
     #============================ private =====================================
     
-    def _serial_rx_cb(self,b):
-        raise NotImplementedError()
+    #=== tx
     
-    def _hdlcify(self,inBuf):
-        
-        # make copy of input
-        outBuf     = inBuf[:]
-        
-        # calculate CRC
-        crc        = self.crc.CRCINIT
-        for b in outBuf:
-            crc    = self.crc.crc_iteration(crc,b)
-        crc        = 0xffff-crc
-        
-        # append CRC
-        outBuf    += [ crc & 0xff]
-        outBuf    += [(crc & 0xff00) >> 8]
-        
-        # espace bytes
-        # FIXME
-        #outBuf     = outBuf.replace(self.HDLC_ESCAPE, self.HDLC_ESCAPE+self.HDLC_ESCAPE_ESCAPED)
-        #outBuf     = outBuf.replace(self.HDLC_FLAG,   self.HDLC_ESCAPE+self.HDLC_FLAG_ESCAPED)
-        
-        # add flags
-        outBuf     = [self.HDLC_FLAG] + outBuf + [self.HDLC_FLAG]
-        
-        return outBuf
+    def _hdlc_tx_open(self):
+        self.txCrc      = self.crc.CRCINIT
+        self.txBuf      = []
+        self.txBuf     += [self.HDLC_FLAG]
 
-    def _dehdlcify(self,inBuf):
-        assert inBuf[ 0]==self.HDLC_FLAG
-        assert inBuf[-1]==self.HDLC_FLAG
+    def _hdlc_tx_write(self,b):
+        self.txCrc      = self.crc.crc_iterate(self.txCrc,b)
+        if b == self.HDLC_FLAG or b == self.HDLC_ESCAPE:
+            self.txBuf += [self.HDLC_ESCAPE]
+            b           = b ^ self.HDLC_ESCAPE_MASK;
+        self.txBuf     += [b]
+
+    def _hdlc_tx_close(self):
         
-        # make copy of input
-        outBuf     = inBuf[:]
+        finalCrc = 0xffff-self.txCrc;
         
-        # remove flags
-        outBuf     = outBuf[1:-1]
+        self._hdlc_tx_write((finalCrc >> 0) & 0xff); # CRC is escaped
+        self._hdlc_tx_write((finalCrc >> 8) & 0xff); # CRC is escaped
         
-        # unstuff
-        outBuf     = outBuf.replace(self.HDLC_ESCAPE+self.HDLC_FLAG_ESCAPED,   self.HDLC_FLAG)
-        outBuf     = outBuf.replace(self.HDLC_ESCAPE+self.HDLC_ESCAPE_ESCAPED, self.HDLC_ESCAPE)
+        self.txBuf     += [self.HDLC_FLAG]
+
+    def _hdlc_rx_open(self):
+    
+        self.rxBuf      = []
+        self.rxCrc      = self.crc.CRCINIT;
+
+    def _hdlc_rx_write(self,b):
         
-        if len(outBuf)<2:
-            raise HdlcException('packet too short')
+        if b == self.HDLC_ESCAPE:
+            self.rxEscaping = True
+        else:
+            if self.rxEscaping == True:
+                b = b ^ self.HDLC_ESCAPE_MASK
+                self.rxEscaping = False
+
+            # add byte to input buffer
+            self.rxBuf += [b]
+
+            # iterate through CRC calculator
+            self.rxCrc = self.crc.crc_iterate(self.rxCrc, b)
+
+    def _hdlc_rx_close(self):
         
-        # check CRC
-        crc        = self.HDLC_CRCINIT
-        for b in outBuf:
-            crc    = self.crc.crc_iteration(crc,b)
-        if crc!=self.crc.CRCGOOD:
-           raise HdlcException('wrong CRC')
+        # verify the validity of the frame
+        if self.rxCrc == self.crc.CRCGOOD:
+            # the CRC is correct
+
+            # remove the CRC from the input buffer
+            self.rxBuf = self.rxBuf[:-2]
+
+            crcValid = True
+        else:
+            # the CRC is incorrect
+
+            crcValid = False
+
+        return crcValid
+    
+    #=== serial
+    
+    def _serial_rx_cb(self,rxByte):
         
-        # remove CRC
-        outBuf     = outBuf[:-2] # remove CRC
-        
-        return outBuf
+        if (
+            self.rxBusyReceiving == False and
+            self.rxLastByte == self.HDLC_FLAG and
+            rxByte != self.HDLC_FLAG
+        ):
+            # start of frame
+
+            # I'm now receiving
+            self.rxBusyReceiving = True
+
+            # create the HDLC frame
+            self._hdlc_rx_open();
+
+            # add the byte just received
+            self._hdlc_rx_write(rxByte);
+        elif (
+            self.rxBusyReceiving == True and
+            rxByte != self.HDLC_FLAG
+        ):
+            # middle of frame
+
+            # add the byte just received
+            self._hdlc_rx_write(rxByte);
+
+        elif (
+            self.rxBusyReceiving == True and
+            rxByte == self.HDLC_FLAG
+        ):
+            # end of frame
+
+            # finalize the HDLC frame
+            self.rxBusyReceiving = False
+            crcValid = self._hdlc_rx_close()
+
+            if crcValid:
+                
+                # call the callback
+                self.rx_cb(self.rxBuf)
+            
+            self.rxBuf       = []
+
+        self.rxLastByte = rxByte

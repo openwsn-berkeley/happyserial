@@ -9,8 +9,6 @@
 #define HDLC_FLAG            0x7e
 #define HDLC_ESCAPE          0x7d
 #define HDLC_ESCAPE_MASK     0x20
-#define HDLC_CRCINIT         0xffff
-#define HDLC_CRCGOOD         0xf0b8
 
 #define HDLC_TXBUF_LEN       256 // leave at 256 to allow for wrap-around
 #define HDLC_RXBUF_LEN       256
@@ -93,7 +91,7 @@ void hdlc_tx(uint8_t* buf, uint8_t bufLen) {
 //=== tx
 
 void _hdlc_tx_open(void) {
-    hdlc_vars.txCrc                         = HDLC_CRCINIT;
+    hdlc_vars.txCrc                         = CRCINIT;
     hdlc_vars.txBuf[hdlc_vars.txBufIdxW++]  = HDLC_FLAG;
 }
 
@@ -120,7 +118,7 @@ void _hdlc_tx_close(void) {
 void _hdlc_rx_open(void) {
     
     hdlc_vars.rxBufFill = 0;
-    hdlc_vars.rxCrc     = HDLC_CRCINIT;
+    hdlc_vars.rxCrc     = CRCINIT;
 }
 
 void _hdlc_rx_write(uint8_t b) {
@@ -145,7 +143,7 @@ bool _hdlc_rx_close(void) {
     bool crcValid;
 
     // verify the validity of the frame
-    if (hdlc_vars.rxCrc == HDLC_CRCGOOD) {
+    if (hdlc_vars.rxCrc == CRCGOOD) {
         // the CRC is correct
 
         // remove the CRC from the input buffer

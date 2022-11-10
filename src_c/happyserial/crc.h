@@ -5,6 +5,9 @@
 
 //=========================== define ==========================================
 
+#define CRCINIT         0xffff
+#define CRCGOOD         0xf0b8
+
 // this table is used to expedite execution (at the expense of memory usage)
 static const uint16_t crc_fcstab[256] = {
    0x0000, 0x1189, 0x2312, 0x329b, 0x4624, 0x57ad, 0x6536, 0x74bf,

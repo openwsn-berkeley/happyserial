@@ -24,7 +24,7 @@ class BreakfastSerial(threading.Thread):
     def run(self):
         while True:
             b = self.serial.read()
-            self.rx_cb(b)
+            self.rx_cb(ord(b))
     
     #======================== public ==========================================
 

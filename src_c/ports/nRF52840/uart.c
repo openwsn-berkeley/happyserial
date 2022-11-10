@@ -85,9 +85,9 @@ void uart_init(uart_txByteDone_cbt uart_txByteDone_cb, uart_rxByte_cbt uart_rxBy
     // .... .... .... I... .... .... .... .... I: RXSTARTED
     // .... .... ...J .... .... .... .... .... J: TXSTARTED
     // .... .... .L.. .... .... .... .... .... L: TXSTOPPED
-    // xxxx xxxx x0x0 0x0x xxxx xx00 0xx1 x000 
-    //    0    0    0    0    0    0    1    0 0x00000010
-    NRF_UARTE0->INTENSET               = 0x00000010;
+    // xxxx xxxx x0x0 0x0x xxxx xx01 0xx1 x000 
+    //    0    0    0    0    0    1    1    0 0x00000110
+    NRF_UARTE0->INTENSET               = 0x00000110;
     NRF_UARTE0->ENABLE                 = 0x00000008; // 0x00000008==enable
     
     // enable interrupts
