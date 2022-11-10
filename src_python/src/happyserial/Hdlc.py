@@ -30,7 +30,7 @@ class Hdlc(object):
     
     #============================ private =====================================
     
-    def _serial_rx_cb(buf):
+    def _serial_rx_cb(self,b):
         raise NotImplementedError()
     
     def _hdlcify(self,inBuf):
