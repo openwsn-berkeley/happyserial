@@ -26,15 +26,15 @@ Your code ends up sending and receiving serial frames through those library, nev
 
 - framing of the serial stream
 - detect and drop corrupted frames
-- uses the DMA on the nRF so your firmware routines aren't interrupted by every byte received
 
 # wishlist
 
 - retransmission when a frame is corrupted
+- uses the DMA on the nRF so your firmware routines aren't interrupted by every byte received
 
 # using `happyserial`
 
-On the python side:
+On the Python side:
 
 ```
 import happyserial
@@ -52,17 +52,21 @@ happyser.send(txframe=[0x00,0x01,0x02,0x03])
 On the C side:
 
 ```
+...
 #include "happyserial.h"
 
-void rx_cb(uint8_t* buf,uint8_t* len) {
-    // called each time your device receives a frame
+int main(void) {
+    
+    happyserial_init(_happyserial_rx_cb);
+
+    ...
+    
+    happyserial_tx(buf,bufLen);
 }
 
-happyserial_init(rx_cb)
+//=========================== interrupt handlers ==============================
 
-...
-
-const uint8_t txframe[] = {0x00,0x01,0x02,0x03};
-
-happyser_send(txframe,sizeof(txframe));
+void _happyserial_rx_cb(uint8_t* buf, uint8_t bufLen) {
+    ...
+}
 ```
