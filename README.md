@@ -37,16 +37,17 @@ Your code ends up sending and receiving serial frames through those library, nev
 On the Python side:
 
 ```
-import happyserial
+from happyserial import HappySerial
 
-def rx_cb(self,rxframe):
-    print(rxframe) # called each time Python receives a frame
+def _happyserial_rx_cb(buf):
+    print('rx: {}'.format(buf))
+    
+happy = HappySerial.HappySerial(
+    serialport = 'COM41',
+    rx_cb      = _happyserial_rx_cb,
+)
 
-happyser = happyserial.Happyserial(rx_cb)
-
-...
-
-happyser.send(txframe=[0x00,0x01,0x02,0x03])
+happy.tx([0x01,0x02,0x03])
 ```
 
 On the C side:
@@ -56,15 +57,12 @@ On the C side:
 #include "happyserial.h"
 
 int main(void) {
+    uint8_t buf = {0x00,0x01,0x03};
     
     happyserial_init(_happyserial_rx_cb);
-
     ...
-    
-    happyserial_tx(buf,bufLen);
+    happyserial_tx(buf,sizeof(buf));
 }
-
-//=========================== interrupt handlers ==============================
 
 void _happyserial_rx_cb(uint8_t* buf, uint8_t bufLen) {
     ...
