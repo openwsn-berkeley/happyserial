@@ -5,6 +5,8 @@
 
 //=========================== prototypes ======================================
 
+void _happyserial_rx_cb(uint8_t* buf, uint8_t bufLen);
+
 //=========================== variables =======================================
 
 typedef struct {
@@ -23,6 +25,8 @@ app_dbg_t app_dbg;
 
 int main(void) {
     
+    happyserial_init(_happyserial_rx_cb);
+
     // main loop
     while(1) {
 
@@ -34,3 +38,7 @@ int main(void) {
 }
 
 //=========================== interrupt handlers ==============================
+
+void _happyserial_rx_cb(uint8_t* buf, uint8_t bufLen) {
+    happyserial_tx(buf,bufLen);
+}

@@ -3,3 +3,4 @@ __pycache__
 /src_python/dist
 *.emSession
 Output/
+*.jlink
