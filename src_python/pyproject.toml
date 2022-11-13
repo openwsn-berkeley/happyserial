@@ -5,6 +5,9 @@ addopts       = [
 pythonpath    = [
     "src",
 ]
+markers = [
+    "functional"
+]
 
 [build-system]
 requires      = ["setuptools", "wheel"]

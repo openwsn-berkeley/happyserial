@@ -36,6 +36,7 @@ def connectedHappySerial():
     )
 
 @pytest.mark.parametrize("msg", FIXTURE_MSG)
+@pytest.mark.functional
 def test_echo(connectedHappySerial,msg):
     
     connectedHappySerial.tx(msg)
