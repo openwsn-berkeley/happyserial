@@ -1,5 +1,8 @@
 from happyserial import Hdlc
 
+class HappyException(object):
+    pass
+
 class HappySerial(object):
     
     MSG_MAXLEN          = 124 # due to limited buffer size on embedded side

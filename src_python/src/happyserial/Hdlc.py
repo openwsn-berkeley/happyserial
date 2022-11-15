@@ -1,9 +1,6 @@
 from happyserial import BreakfastSerial, \
                         Crc
 
-class HdlcException(Exception):
-    pass
-
 class Hdlc(object):
     
     HDLC_FLAG           = 0x7e
