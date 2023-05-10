@@ -12,7 +12,7 @@
     gcc_debugging_level="Level 2"
     gcc_omit_frame_pointer="Yes"
     gcc_optimization_level="Level 2 balanced" />
-  <project Name="happyserial">
+  <project Name="echo">
     <configuration
       LIBRARY_IO_TYPE="RTT"
       Name="Common"
@@ -33,7 +33,7 @@
       arm_target_device_name="nRF5340_xxAA_APP"
       arm_target_interface_type="SWD"
       c_preprocessor_definitions="ARM_MATH_ARMV8MML;NRF5340_XXAA;NRF_APPLICATION;__NRF_FAMILY"
-      c_user_include_directories="$(ProjectDir)/CMSIS_5/CMSIS/Core/Include;$(ProjectDir)/nRF/Device/Include"
+      c_user_include_directories="$(ProjectDir)/CMSIS_5/CMSIS/Core/Include;$(ProjectDir)/nRF/Device/Include;$(ProjectDir)/../../happyserial;$(ProjectDir)/../../ports/"
       debug_register_definition_file="$(ProjectDir)/nrf5340_application_Registers.xml"
       debug_stack_pointer_start="__stack_end__"
       debug_start_from_entry_point_symbol="No"
@@ -62,7 +62,19 @@
     </folder>
     <folder Name="Source Files">
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
-      <file file_name="main.c" />
+      <folder
+        Name="happyserial"
+        exclude=""
+        filter="*.*"
+        path="../../happyserial"
+        recurse="No" />
+      <folder
+        Name="ports"
+        exclude=""
+        filter="*.*"
+        path="../../ports"
+        recurse="No" />
+      <file file_name="../common/echo/echo.c" />
     </folder>
     <folder Name="System Files">
       <file file_name="SEGGER_THUMB_Startup.s" />
