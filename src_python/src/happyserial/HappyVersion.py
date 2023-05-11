@@ -1,1 +1,1 @@
-VERSION = (1,0,0)
+HAPPYVERSION = (1,2,0)

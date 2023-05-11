@@ -1,3 +1,8 @@
+# running tests
+- `cd src_python`
+- `pytest` to run all tests, including functional
+- `pytest -m "not functional"` to run only unitests
+
 # run from source
 
 - `cd src_python`
