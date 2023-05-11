@@ -42,3 +42,9 @@ def test_echo(connectedHappySerial,msg):
     connectedHappySerial.tx(msg)
     rxSem.acquire(timeout=5)
     assert rxClass.msg == msg
+
+@pytest.mark.parametrize("msg", FIXTURE_MSG)
+@pytest.mark.functional
+def test_echo_waitforresponse(connectedHappySerial,msg):
+    msgout = connectedHappySerial.tx(msg,waitforresponse=True)
+    assert msgout == msg
