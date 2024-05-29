@@ -36,7 +36,7 @@ Your code ends up sending and receiving serial frames through those library, nev
 
 On the Python side:
 
-```
+```python
 from happyserial import HappySerial
 
 def _happyserial_rx_cb(buf):
@@ -52,7 +52,7 @@ happy.tx([0x01,0x02,0x03])
 
 On the C side:
 
-```
+```c
 ...
 #include "happyserial.h"
 
